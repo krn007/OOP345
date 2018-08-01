@@ -1,0 +1,222 @@
+Script started on Thu 04 Jan 2018 01:48:23 PM EST
+khshah2@matrix:~/OOP345/workshop7> whoami
+khshah2
+khshah2@matrix:~/OOP345/workshop7>  cat *.h *.cpp
+#ifndef W7_PRODUCT_H
+#define W7_PRODUCT_H
+#include "iProduct.h"	
+
+namespace w7{
+    class Product : public iProduct{
+	int product_number_;
+	double cost_;
+    public:
+	Product(int product_number, double cost);
+	virtual double getCharge() const;
+	virtual void display(std::ostream& os) const;
+
+    };
+
+    
+}
+
+
+#endif
+#ifndef W7_SALE_H
+#define W7_SALE_H
+#include <vector>
+#include "Product.h"
+#include"TaxableProduct.h"
+
+namespace w7{
+    class Sale {
+	std::vector<iProduct*> products;
+
+    public:
+	Sale(const char* file);
+	virtual ~Sale();
+
+	void display(std::ostream& os) const;
+    };
+
+}
+#endif
+#ifndef W7_TAXABLEPRODUCT_H
+#define W7_TAXABLEPRODUCT_H
+#include "Product.h"
+#include "iProduct.h"
+using namespace std;
+namespace w7 {
+	class TaxableProduct : public Product {
+		char taxable_status_;
+	public:
+		TaxableProduct(int product_number, double cost, char taxable_status);
+		virtual double getCharge() const;
+		virtual void display(std::ostream& os) const;
+	};
+}
+
+
+#endif
+#ifndef _I_PRODUCT_H_ 
+#define _I_PRODUCT_H_ 
+
+#include <iostream> 
+#include <fstream> 
+ 
+namespace w7 { 
+ 
+	class iProduct { 
+	public: 
+		virtual double getCharge() const = 0; 
+		virtual void display(std::ostream&) const = 0; 
+		virtual ~iProduct() {};
+	}; 
+ 
+	std::ostream& operator<<(std::ostream&, const iProduct&); 
+	iProduct* readProduct(std::ifstream&); 
+ 
+} 
+#endif
+#include <iomanip>
+#include "Product.h"
+#include "TaxableProduct.h"
+using namespace std;
+namespace w7{
+    iProduct* readProduct(ifstream& in)
+    {
+	int pn;
+	double cost;
+	char ts;
+
+	in >> pn;
+	if (in.fail())
+	    return (iProduct*) 0;
+	in >> cost;
+	if (in.fail())
+	    return (iProduct*) 0;
+
+	ts = in.get();
+	if(ts != '\n'){
+	    in >> ts;
+	    return new TaxableProduct(pn,cost,ts);
+	} else {
+	    return new Product(pn,cost);
+	}
+    }
+
+    Product::Product(int product_number, double cost){
+	product_number_ = product_number;
+	cost_ = cost;
+    }
+
+    double Product::getCharge() const{
+	return cost_;
+    }
+
+    void Product::display(std::ostream& os) const
+    {
+	os << setw(10) << product_number_ << fixed << setprecision(2);
+	os << setprecision(2) << setw(10) << cost_;
+    }
+
+    
+
+    std::ostream& operator<<(std::ostream& os, const iProduct& P) {
+	P.display(os);
+	return os;
+    }
+
+}
+
+
+#include <iomanip>
+#include <vector>
+#include <fstream>
+#include <iostream>
+#include "Sale.h"
+using namespace std;
+
+namespace w7{
+    Sale::Sale(const char* file){
+	ifstream fs(file);
+	if(fs.is_open()){
+	    iProduct* iP;
+	    while((iP = readProduct(fs)))
+		products.push_back(iP);
+	    fs.close();
+	}
+    }
+
+    Sale::~Sale(){
+       unsigned  int i;
+	for(i = 0;i < products.size();i++)
+	    delete [] products[i];
+    }
+
+    void Sale::display(std::ostream& os) const{
+	double sumcost = 0.0;
+	cout << "Product No      Cost Taxable" << endl;
+	for(unsigned int i = 0;i < products.size();i++){
+	    os << *products[i] << endl;
+	    sumcost += products[i]->getCharge();
+	}
+	cout << setw(10) << "Total" << fixed;
+	cout << setw(10) << setprecision(2) << sumcost << endl;
+    }
+}
+#include <iomanip>
+#include "TaxableProduct.h"
+using namespace std;
+namespace w7 {
+	TaxableProduct::TaxableProduct(int product_number, double cost, char taxable_status) :Product(product_number, cost)
+	{
+		taxable_status_ = taxable_status;
+	}
+
+	double TaxableProduct::getCharge() const {
+		double charge = Product::getCharge();
+		(taxable_status_ == 'H') ? charge *= 1.13 : charge *= 1.08;
+		return charge;
+	}
+
+	void TaxableProduct::display(std::ostream& os) const {
+		Product::display(os);
+		os << ' ';
+		(taxable_status_ == 'H') ? os << "HST" : os << "PST";
+	}
+
+}
+#include <iostream>
+#include <string>
+#include "Sale.h"
+
+int main(int argc, char** argv) {
+    if (argc != 2) {
+	std::cerr << argv[0] << ": incorrect number of arguments\n";
+	std::cerr << "Usage: " << argv[0] << " file_name\n";
+	return 1;
+    }
+
+    w7::Sale sale(argv[1]);
+    sale.display(std::cout);
+
+    std::cout << "\nPress any key to continue ... ";
+    std::cin.get();
+}
+khshah2@matrix:~/OOP345/workshop7>  g++ -o w7 w7.cpp Product.cpp Sale.cpp
+khshah2@matrix:~/OOP345/workshop7> w7 Sales.dat
+Product No      Cost Taxable
+     10012     34.56
+     10023     45.67 HST
+     10234     12.32 PST
+     10056     67.54
+     10029     54.12 HST
+     10034     96.30
+     Total    324.47
+
+Press any key to continue ... 
+khshah2@matrix:~/OOP345/workshop7> exit
+exit
+
+Script done on Thu 04 Jan 2018 01:49:49 PM EST

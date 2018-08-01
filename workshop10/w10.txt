@@ -1,0 +1,172 @@
+﻿Script started on Thu 04 Jan 2018 05:03:11 PM EST
+khshah2@matrix:~/OOP345/workshop10> whoami
+khshah2
+khshah2@matrix:~/OOP345/workshop10> cat[K[K[Kcat SecureData.cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include "SecureData.h"
+
+using namespace std;
+
+namespace w10 {
+
+	void converter(char* t, char key, int n, const Cryptor& c)
+	{
+		for (int i = 0; i < n; i++)
+		{
+			t[i] = c(t[i], key);
+		}
+	}
+
+	SecureData::SecureData(const char* file, char key)
+	{
+		fstream input(file, ios::in);
+		if (input)
+		{
+			nbytes = 0;
+			input >> noskipws;
+			while (input.good())
+			{
+				char c;
+				input >> c;
+				nbytes++;
+			}
+			nbytes--;
+			input.clear();
+			input.seekg(0, ios::beg);
+			text = new char[nbytes + 1];
+
+			int i = 0;
+			while (input.good())
+				input >> text[i++];
+			text[--i] = '\0';
+			cout << endl;
+			cout << nbytes;
+			cout << " bytes copied from text ";
+			cout << file;
+			cout << " into memory (null byte added)";
+			cout << endl;
+			encoded = false;
+
+			code(key);
+			cout << "Data encrypted in memory";
+			cout << endl;
+		}
+	}
+
+	SecureData::~SecureData()
+	{
+		delete[] text;
+	}
+
+	void SecureData::display(ostream& os) const
+	{
+		if (text && !encoded)
+			os << text << endl;
+	}
+
+	void SecureData::code(char key)
+	{
+		converter(text, key, nbytes, Cryptor());
+		encoded = !encoded;
+	}
+
+	void SecureData::backup(const char* file) {
+		if (text)
+		{
+			fstream os(file, ios::out);
+			if (os)
+			{
+				for (int i = 0; i < nbytes; ++i)
+				{
+					os << text[i];
+				}
+			}
+
+		}
+	}
+
+	void SecureData::restore(const char* file, char key)
+	{
+		fstream ifs(file, ios::in);
+		if (ifs)
+		{
+			nbytes = 0;
+			ifs >> noskipws;
+			char tmpc;
+			while (ifs.good())
+			{
+				ifs >> tmpc;
+				nbytes++;
+			}
+
+			if (text)
+			{
+				delete[] text;
+				text = nullptr;
+			}
+			text = new char[nbytes + 1];
+
+			ifs.clear();
+			ifs.seekg(0, ios::beg);
+			nbytes = -1;
+			while (ifs.good())
+			{
+				ifs >> text[++nbytes];
+			}
+			text[nbytes + 1] = '\0';
+
+			cout << endl;
+			cout << nbytes + 1;
+			cout << " bytes copied from binary file ";
+			cout << file;
+			cout << " into memory (null byte included)";
+			cout << endl;
+
+			encoded = true;
+
+			code(key);
+			cout << "Data decrypted in memory";
+			cout << endl;
+		}
+	}
+
+	ostream& operator<<(ostream& os, const SecureData& data)
+	{
+		data.display(os);
+		return os;
+	}
+
+}khshah2@matrix:~/OOP345/workshop10>  g++ -std=c++0x -o w10 w10.cpp SecureData.cpp
+khshah2@matrix:~/OOP345/workshop10> w10 w10_text.dat encoded.dat %
+
+Command Line : w10 w10_text.dat encoded.dat % 
+
+938 bytes copied from text w10_text.dat into memory (null byte added)
+Data encrypted in memory
+
+939 bytes copied from binary file encoded.dat into memory (null byte included)
+Data decrypted in memory
+ Compound types are types that a programmer constructs from a language's
+ fundamental types and/or other compound types.  In C++11, compound types 
+ include pointers and references to existing types, enumerations of named 
+ constant values, arrays of objects of an existing type, classes and function
+ types.  C++11 clarified the difference between lvalues and rvalues and 
+ references to each, which helped simplify many of the facilities available
+ in the standard library.
+
+ This chapter describes the non-function types in detail.  The description 
+ includes a review of one-dimensional arrays in both static and dynamic memory
+ and shows how to allocate multi-dimensional arrays in both static and dynamic
+ memory.  The description of classes reviews class definitions, introduces
+ move-constructors and move-assignment operators and includes declarations of
+ special members such as bit fields, class variables and class functions.
+
+
+
+Press any key to continue ... 
+khshah2@matrix:~/OOP345/workshop10> exit
+exit
+
+Script done on Thu 04 Jan 2018 05:04:49 PM EST

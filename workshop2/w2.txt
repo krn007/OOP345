@@ -1,0 +1,267 @@
+Script started on Thu 28 Dec 2017 03:06:26 PM EST
+khshah2@matrix:~/OOP345/workshop2> exitditxt[Kw2 Stations.datg++ -o w2 w2.cpp Station.cpp Stations.cpp[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ccat Station.h Station.cpp Stations.h Stations.cpp[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cwhoami[K
+khshah2
+khshah2@matrix:~/OOP345/workshop2> whoamiexit[Kditxt[Kw2 Stations.datg++ -o w2 w2.cpp Station.cpp Stations.cpp[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ccat Station.h Station.cpp Stations.h Stations.cpp
+/* OOP345 Workshop 2
+Name - Karan Shah
+Student_Id: 129965166
+Date - 28th Decemeber 2017*/
+
+#pragma once
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+enum PassType { adult, student };
+
+class Station {
+	string station_name;
+	unsigned s_pass;
+	unsigned a_pass;
+public:
+	Station() : station_name(""), s_pass(0), a_pass(0) {}
+	void set(const std::string&, unsigned, unsigned);
+	void update(PassType, int);
+	unsigned inStock(PassType) const;
+	const std::string& getName() const;
+};/* OOP345 Workshop 2
+Name - Karan Shah
+Student_Id: 129965166
+Date - 28th Decemeber 2017*/
+
+#include "Station.h"
+
+void Station::set(const std::string& name, unsigned adultpass, unsigned studentpass) {
+
+	station_name = name;
+	s_pass = studentpass;
+	a_pass = adultpass;
+
+
+};
+
+void Station::update(PassType type, int num) {
+
+	if (!type) {
+		a_pass += num;
+
+	}
+	else {
+		s_pass += num;
+
+	};
+
+};
+unsigned Station::inStock(PassType type) const {
+
+	if (!type) {
+		return a_pass;
+	}
+	else {
+		return s_pass;
+	}
+
+};
+const std::string& Station::getName() const {
+	return station_name;
+};/* OOP345 Workshop 2
+Name - Karan Shah
+Student_Id: 129965166
+Date - 28th Decemeber 2017*/
+
+#pragma once
+#include "Station.h"
+
+namespace w2 {
+
+	class Stations {
+		char* file;
+		int num_stations;
+		Station* ptr;
+	public:
+		Stations(char*);
+		~Stations();
+		void update() const;
+		void restock() const;
+		void report() const;
+	};
+
+}
+/*
+public:
+Stations(char* f) : file(f){
+}
+*//* OOP345 Workshop 2
+Name - Karan Shah
+Student_Id: 129965166
+Date - 28th Decemeber 2017*/
+#include <cstdlib>
+#include "Stations.h"
+#include "Station.h"
+#include <fstream>
+#include <iostream>
+#include <iomanip>
+
+w2::Stations::~Stations() {
+	PassType type1, type2;
+	type1 = student;
+	type2 = adult;
+	std::fstream newfile("output.txt", std::ios::out);
+	newfile << num_stations << ";" << endl;
+	for (int i = 0; i < num_stations; i++) {
+		newfile << ptr[i].Station::getName() << ";" << ptr[i].Station::inStock(type1) << " " << ptr[i].Station::inStock(type2) << endl;
+	}
+
+	newfile.close();
+	delete[] ptr;
+}
+
+w2::Stations::Stations(char* input) {
+
+	int stations = 0;
+
+	std::fstream myfile(input);
+
+	if (!myfile.is_open()) {
+		std::cout << "File is not found" << std::endl;
+		myfile.clear();
+		myfile.close();
+		exit(1);
+	}
+	else {
+
+		myfile >> stations;
+		num_stations = stations;
+		myfile.ignore(1, ';');
+		myfile.ignore(1, ' ');
+
+		ptr = new Station[stations];
+
+		char station_name[40];
+		int adultpass;
+		int studentpass;
+		int count = 0;
+
+		while (true) {
+			myfile.getline(station_name, 40, ';');
+
+			myfile >> studentpass;
+			myfile >> adultpass;
+			myfile.ignore(1, ' ');
+			ptr[count].set(station_name, adultpass, studentpass);
+			count++;
+			if (myfile.eof()) break;
+		}
+
+	}
+
+};
+
+void w2::Stations::update() const {
+	int s_passes = 0;
+	int a_passes = 0;
+	PassType type1, type2;
+	type1 = student;
+	type2 = adult;
+	cout << endl;
+	cout << "Passes Sold : " << endl;
+	cout << "--------------" << endl;
+	for (int i = 0; i < num_stations; i++) {
+		cout << ptr[i].getName() << endl;
+		cout << " Student Passes sold : ";
+		cin >> s_passes;
+		s_passes *= -1;
+		ptr[i].update(type1, s_passes);
+		cout << " Adult   Passes sold : ";
+		cin >> a_passes;
+		a_passes *= -1;
+		ptr[i].update(type2, a_passes);
+	};
+
+};
+
+void w2::Stations::restock() const {
+	int s_passes = 0;
+	int a_passes = 0;
+	PassType type1, type2;
+	type1 = student;
+	type2 = adult;
+
+	cout << endl;
+	cout << "Passes added : " << endl;
+	cout << "---------------" << endl;
+	for (int i = 0; i < num_stations; i++) {
+		cout << ptr[i].Station::getName() << endl;
+		cout << " Student Passes sold : ";
+		cin >> s_passes;
+		ptr[i].update(type1, s_passes);
+		cout << " Adult   Passes sold : ";
+		cin >> a_passes;
+		ptr[i].update(type2, a_passes);
+	}
+};
+
+void w2::Stations::report() const {
+	PassType type1, type2;
+	type1 = student;
+	type2 = adult;
+	cout << endl;
+
+	cout << "Passes in Stock : Student Adult" << endl;
+	cout << "-------------------------------" << endl;
+	for (int i = 0; i < num_stations; i++) {
+		cout << setw(18) << left << ptr[i].Station::getName()
+			<< setw(10)
+			<< ptr[i].Station::inStock(type1)
+			<< setw(4)
+			<< ptr[i].Station::inStock(type2)
+			<< endl;
+	}
+};
+khshah2@matrix:~/OOP345/workshop2> cat Station.h Station.cpp Stations.h Stations.cpp[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cwhoami[Kexit[Kditxt[Kw2 Stations.datg++ -o w2 w2.cpp Station.cpp Stations.cpp
+khshah2@matrix:~/OOP345/workshop2> g++ -o w2 w2.cpp Station.cpp Stations.cpp[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ccat Station.h Station.cpp Stations.h Stations.cpp[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cwhoami[Kexit[Kditxt[Kw2 Stations.dat
+
+Command Line : w2 Stations.dat 
+
+Passes Sold : 
+--------------
+Spadina
+ Student Passes sold : 5
+ Adult   Passes sold : 8
+Bathurst
+ Student Passes sold : 34
+ Adult   Passes sold : 52
+Keele
+ Student Passes sold : 21
+ Adult   Passes sold : 19
+Bay
+ Student Passes sold : 67
+ Adult   Passes sold : 65
+
+Passes added : 
+---------------
+Spadina
+ Student Passes sold : 29
+ Adult   Passes sold : 52
+Bathurst
+ Student Passes sold : 112^H3
+ Adult   Passes sold : Keele
+ Student Passes sold :  Adult   Passes sold : Bay
+ Student Passes sold :  Adult   Passes sold : 
+Passes in Stock : Student Adult
+-------------------------------
+Spadina           100       200 
+Bathurst          199       239 
+Keele             161       42  
+Bay               203       93  
+khshah2@matrix:~/OOP345/workshop2> exite
+If 'exite' is not a typo you can use command-not-found to lookup the package that contains it, like this:
+    cnf exite
+khshah2@matrix:~/OOP345/workshop2> xit
+If 'xit' is not a typo you can use command-not-found to lookup the package that contains it, like this:
+    cnf xit
+khshah2@matrix:~/OOP345/workshop2> exit
+exit
+
+Script done on Thu 28 Dec 2017 03:07:32 PM EST

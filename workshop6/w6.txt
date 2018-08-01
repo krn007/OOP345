@@ -1,0 +1,130 @@
+Script started on Thu 28 Dec 2017 07:39:28 PM EST
+khshah2@matrix:~/OOP345/workshop6> whoami
+khshah2
+khshah2@matrix:~/OOP345/workshop6> cat w6.cpp Grades.h
+/* OOP345 Workshop 6
+Name - Karan Shah
+Student_Id: 129965166
+Date - 28th Decemeber 2017*/
+
+#include <iostream>
+#include "Grades.h"
+
+int main(int argc, char* argv[]) {
+	if (argc != 2) {
+		std::cerr << argv[0] <<
+			": incorrect number of arguments\n";
+		std::cerr << "Usage: " << argv[0] << " file_name\n";
+		return 1;
+	}
+
+	Grades grades(argv[1]);
+	auto letter = [](double grade)->std::string {
+		std::string lGrade;
+		if (grade >= 90)
+			lGrade = "A+";
+		else if (grade>80)
+			lGrade = "A";
+		else if (grade>75)
+			lGrade = "B+";
+		else if (grade>70)
+			lGrade = "B";
+		else if (grade>65)
+			lGrade = "C+";
+		else if (grade>60)
+			lGrade = "C";
+		else if (grade>55)
+			lGrade = "D+";
+		else if (grade>50)
+			lGrade = "D";
+		else
+			lGrade = "F";
+		return lGrade;
+	};
+
+	grades.displayGrades(std::cout, letter);
+	std::cout << "Press any key to continue ... ";
+	std::cin.get();
+	return 0;
+}/* OOP345 Workshop 6
+Name - Karan Shah
+Student_Id: 129965166
+Date - 28th Decemeber 2017*/
+
+#pragma once
+#include <fstream>
+#include <string>
+#include <iostream>
+#include <functional>
+
+class Grades
+{
+	size_t count;
+	struct studentEntry
+	{
+		std::string studentNumber;
+		double studentMark;
+	} *studentTable;
+
+public:
+	Grades() : count(0)
+	{
+	}
+	Grades(const char* filename) : count(0)
+	{
+		std::fstream is(filename);
+		if (is.is_open())
+		{
+			std::string line;
+			while (getline(is, line))
+			{
+				count++;
+			}
+
+
+			is.clear();
+			is.seekg(0);
+
+			studentTable = new studentEntry[count];
+
+			for (size_t i = 0; i < count; i++)
+			{
+				is >> studentTable[i].studentNumber;
+				is >> studentTable[i].studentMark;
+			}
+
+			is.close();
+		}
+		else
+		{
+			throw std::string("Grade(\"") + filename + "\") - cannot open file \n ";
+		}
+	}
+	void displayGrades(std::ostream& os, std::function<std::string(double mark)> letter)const
+	{
+		for (size_t i = 0; i < count; i++)
+		{
+			os << studentTable[i].studentNumber << " "
+				<< studentTable[i].studentMark << " "
+				<< letter(studentTable[i].studentMark)
+				<< "\n";
+		}
+	}
+
+};
+khshah2@matrix:~/OOP345/workshop6> g++ -std="c++0x" -o w6 w6.cpp
+khshah2@matrix:~/OOP345/workshop6> w6 w6.dat
+1022342 67.4 C+
+1024567 73.5 B
+2031456 79.3 B+
+6032144 53.5 D
+1053250 92.1 A+
+3026721 86.5 A
+7420134 62.3 C
+9762314 58.7 D+
+6521045 34.6 F
+Press any key to continue ... 
+khshah2@matrix:~/OOP345/workshop6> exit
+exit
+
+Script done on Thu 28 Dec 2017 07:40:21 PM EST

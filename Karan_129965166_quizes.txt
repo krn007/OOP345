@@ -1,0 +1,371 @@
+Please create a one line answer to these ten quizzes:
+Note question 8 has 4 answers
+/********************************************************************************************************************************/
+ANSWERS
+
+*********************************************************************************************************************************/
+1  D
+2  C
+3  B
+4  A
+5  A
+6  A
+7  A
+8  ABCD
+9  B
+10 D
+
+*********************************************************************************************************************************/
+
+
+++++++++++++++++++++++++++++++++++++++++
++ From One Translation Unit to Another +
+++++++++++++++++++++++++++++++++++++++++
+
+Workshop 1
+
+
+In this workshop, you implement aspects of linkage, storage duration, namespaces, guards, and operating system interfaces.
+
+Learning Outcome
+
+Upon successful completion of this workshop, you will have demonstrated the ability
+
+    to link to a variable in another translation unit
+    to declare a local variable that lasts the lifetime of the program
+    to guard a class definition from repetition
+    to define a class within its own namespace
+    to pass arguments to program from the command line
+
+Q1:  What is the second character of the first argv table element?
+A  argv[0][0]
+B  argv[1][0]
+C  argv[2][0]
+D  argv[0][1]
+E  argv[1][1]
+F  argv[2][1]
+G  argv[0][2]
+H  argv[1][2]
+I  argv[2][2]
+
+
+++++++++++++++++++
++ Compound Types +
+++++++++++++++++++
+
+Workshop 2
+
+
+In this workshop, you review simple fstream input and output and use the string class of the Standard Library to manage character string data.
+
+Learning Outcomes
+
+Upon successful completion of this workshop, you will have demonstrated the abilities to
+
+    work with objects of the string class
+    declare and use enumeration constants
+    use the correct constant type in initializations
+    retrieve data from and backup data to a text file
+    move data between unsigned and signed integers
+
+Q2: What is the correct file open mode to create a new file if it does not exist or truncate a file to size zero if it already exists?
+A  fstream os(filename, ios::in  | ios::app)
+B  fstream os(filename, ios::in  | ios::ate)
+C  fstream os(filename, ios::in  | ios::trunc)
+A  fstream os(filename, ios::out | ios::app)
+D  fstream os(filename, ios::out | ios::ate)
+E  fstream os(filename, ios::out | ios::trunc)
+
+
++++++++++++++++++++++++++++
++ Move and Copy Semantics +
++++++++++++++++++++++++++++
+
+Workshop 3
+
+
+In this workshop, you are to compare move and copy operations on an object that contains a dynamically allocated array of string objects.
+
+Learning Outcomes
+
+Upon successful completion of this workshop, you will have demonstrated the abilities to
+
+    implement copy semantics for a class with a resource
+    implement move semantics for a class with a resource
+    identify the processing-intensive operations in copy and move assignments
+    retrieve data from a text file using an ifstream object
+    reflect on the material learned through this workshop
+
+Q3: The workshop opens a file by a fstream is(filename, ios::in); fstream constructor call.  
+The program reads the file twice.
+The first pass counted the nummber of lines on the file. 
+The program allocated a string table of the required size.  
+The second pass read the lines into the string table.  
+The first pass reads the file until it encountered an EOF (end-of-file) state.  
+How do you reset the EOF state so the file can be read in again in the second pass?
+  
+What function should the program call to reset the error state created when the first pass encounters EOF (end-of-file)?
+A  is.bad()
+B  is.clear()
+C  is.copyfmt()
+D  is.embue()
+E  is.eof()
+F  is.exceptions()
+G  is.fail()
+H  is.fill()
+I  is.good()
+J  is.reset()
+K  is.rdstate()
+L  is.setstate()
+M  is.tie()
+
+
++++++++++++++
++ Templates +
++++++++++++++
+
+Workshop 4
+
+
+In this workshop, you design and code a class template and test it on two different classes.
+
+Learning Outcomes
+
+Upon successful completion of this workshop, you will have demonstrated the abilities to
+
+    design and code a class template
+    store key-value information in a pair of parallel arrays
+    reflect on the material learned in this workshop
+
+Q4:  This workshop created a pair of tables, K and V, similar to this:
+  template<typename K, typename V,int N> 
+  class KVList {
+    K k[N];
+    V v[N];
+    int count;
+  pubic:
+  ...
+  };
+
+Is it possible to accomplish the same thing as Workshop 4 if you code as a table of KV-pairs?
+  template<typename K, typename V,int N> 
+  class KVList2 {
+    struct {
+      K k;
+      V v;
+    } KVPair[N];
+    int count;
+  pubic:
+  ...
+  };
+
+A  True        
+B  False
+
+++++++++++++++
++ Containers +
+++++++++++++++
+
+Workshop 5
+
+
+In this workshop, you code a container class that holds notifications and a class that holds separate messages.
+
+Learning Outcomes
+
+Upon successful completion of this workshop, you will have demonstrated the abilities to
+
+    design and code a composition of objects
+    read records from a file into a string object
+    parse a string object into components based on simple rules
+    reflect on the material learned in this workshop
+
+Q5: This workshop uses composition.  
+There are two classes: class Message and the MessageManager (class Notifications).
+Is workshop 2, the TTC workshop (class Station and the StationManager, class Stations) also a composition?
+
+A  True        
+B  False
+
+++++++++++++++++++++++
++ Lambda Expressions +
+++++++++++++++++++++++
+
+Workshop 6
+
+
+In this workshop, you convert the grades earned by students in a course to letter values using Seneca's grading scale.
+
+Learning Outcomes
+
+Upon successful completion of this workshop, you will have demonstrated the abilities to
+
+    use a lambda expression to define an operation on a set of data values
+    prevent the copying, moving and assigning of an object
+    throw and report an exception
+    reflect on what you have learned in this workshop
+
+Q6: Can lambas defined locally (or inside) a function be viewed as increasing O-O encapsulation?
+
+A  True    
+B  False
+
+++++++++++++++++++
++ STL Containers +
+++++++++++++++++++
+
+Workshop 7
+
+
+In this workshop, you store a set of polymorphic objects in an STL container.
+
+Learning Outcomes
+
+Upon successful completion of this workshop, you will have demonstrated the abilities to
+
+    store and manage polymorphic objects using an STL vector
+    store a set of uniform rates for all instances of a class using a class array
+    report and handle an exception
+    reflect on what you have learned in this workshop
+
+Q7: What does this code print?
+  try {
+    auto X = [] { throw nullptr; }
+    auto Y = [X] { X(); };
+    auto Z = [Y] { Y(); };
+
+    Z();
+  } catch (const char* e)   {
+    cerr << "something threw a char* exception\n"; 
+  } catch (const std::string* e) {
+    cerr << "something threw a string exception\n"; 
+  } catch (...)            {
+    cerr << "something threw a ... exception\n"; 
+  }
+
+A "something threw a char* exception\n"    
+B "something threw a string exception\n 
+C "something threw a ... exception\n" 
+
+
+++++++++++++++++++
++ STL Algorithms +
+++++++++++++++++++
+
+Workshop 8
+
+
+In this workshop, you use the Standard Template Library's algorithms to evaluate sample data.
+
+Learning Outcomes
+
+Upon successful completion of this workshop, you will have demonstrated the abilities to
+
+    copy data from a file into a sequential container
+    accumulate data values using the STL's numeric library
+    specify an operation on each value in a data set using a lambda expression
+    sort the data values in a data set using the STL's algorithm
+    reflect on what you have learned in this workshop
+
+Q8: Most algorithms are function templates which wrap a for loop.  
+The sort algorthm wraps two for loops. 
+Match up the body of the for loops with the function template header
+
+Header 1:
+ T accumulate(iterator begin, iterator end, T initialValue)
+
+Header 2:
+ T inner_product(iterator begin, iterator end, iterator begin2, T initialValue)
+
+Header 3:
+ size_t count count(iterator begin, iterator end, T Value)
+
+Header 4:
+ iterator find(iterator begin, iterator end, T Value)
+
+Code Body A:
+   T sum = initialvalue;
+   for(auto it = begin, it != end, it++)
+     sum += *it;
+   return sum;
+
+Code Body B:
+   T sum = initialvalue;
+   for(auto it = begin, it != end, it++)
+     sum += *it * *begin2++;
+   return sum;
+
+Code Body C:
+   size_t hits = 0;
+   for(auto it = begin, it != end, it++)
+     if(*it == Value)
+       hits++;
+   return hits;
+
+Code Body D:
+   for(auto it = begin, it != end, it++)
+     if(*it == Value)
+       return it;
+   return end;
+
+ANSWER
+Header  Body
+1       A, B, C, or D?
+2       A, B,C, or D?
+3       A, B, C, or D?
+4       A, B, C, or D?
+
++++++++++++++++++++++++++++++++++++++++++
++ Smart Pointers + Quadratic Complexity +
++++++++++++++++++++++++++++++++++++++++++
+
+Workshop 9
+
+
+In this workshop, you merge two lists and use a smart pointer to ensure that memory is deallocated in the possible handling of an exception.
+
+Learning Outcomes
+
+Upon successful completion of this workshop, you will have demonstrated the abilities to
+
+    create a program component of quadratic complexity
+    use a smart pointer to move an object
+    reflect on the topics learned in this workshop
+
+Q9: Quadratic complexity components usually consist of a number nested for loops.  How many?
+A  1
+B  2 
+C  3
+E  4
+F  5
+
++++++++++++++++++++
++ Multi-Threading +
++++++++++++++++++++
+
+Workshop 10
+
+
+In this workshop, you backup an encrypted text file of characters to a binary file, restore the encrypted data from the binary file and add multi-threading to the solution.
+
+Learning Outcomes
+
+Upon successful completion of this workshop, you will have demonstrated the abilities to
+
+    execute partitioned data on two or more threads
+    write a set of characters to a file in binary mode
+    read a set of characters from a file in binary mode
+    bind a function to its arguments
+    reflect on the experience gained in this workshop
+
+Q10: How many threads were launched in Workshop 10?
+
+A  -1
+B   0
+C   1
+D   2   
+E   3
+F   4
+G   thread::hardware_concurrency()
+
+
